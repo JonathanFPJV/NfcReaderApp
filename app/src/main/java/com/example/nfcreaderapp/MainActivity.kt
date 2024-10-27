@@ -37,58 +37,23 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NFCReaderApp(nfcManager: NFCManager) {
-    val nfcId by nfcManager.nfcId.collectAsState()
     val isNFCEnabled = remember { mutableStateOf(nfcManager.isNFCEnabled()) }
+    val isReaderActive = remember { mutableStateOf(false) }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            if (!isNFCEnabled.value) {
-                Text(
-                    text = "NFC no está habilitado",
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.error
-                )
-            } else {
-                Text(
-                    text = "Acerca una tarjeta NFC",
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                if (nfcId != null) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "ID de la tarjeta:",
-                                fontSize = 16.sp
-                            )
-                            Text(
-                                text = nfcId ?: "",
-                                fontSize = 24.sp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                }
+    Surface(color = MaterialTheme.colorScheme.background) {
+        NFCReaderScreen(
+            nfcManager = nfcManager,
+            isNFCEnabled = isNFCEnabled.value,
+            isReaderActive = isReaderActive.value,
+            onActivateReader = {
+                isReaderActive.value = true
+                nfcManager.enableReaderMode()
+            },
+            onDeactivateReader = {
+                isReaderActive.value = false
+                nfcManager.disableReaderMode()
             }
-        }
+        )
     }
 }
 
