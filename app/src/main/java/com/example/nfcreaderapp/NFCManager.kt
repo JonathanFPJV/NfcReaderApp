@@ -7,6 +7,8 @@ import android.nfc.tech.MifareClassic
 import android.nfc.tech.NfcA
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import android.content.Intent
+import android.provider.Settings
 
 class NFCManager(private val activity: Activity) {
     private var nfcAdapter: NfcAdapter? = null
@@ -19,6 +21,13 @@ class NFCManager(private val activity: Activity) {
 
     fun isNFCEnabled(): Boolean {
         return nfcAdapter?.isEnabled == true
+    }
+
+
+
+    fun goToNFCSettings() {
+        val intent = Intent(Settings.ACTION_NFC_SETTINGS)
+        activity.startActivity(intent)
     }
 
     fun enableReaderMode() {
@@ -41,6 +50,10 @@ class NFCManager(private val activity: Activity) {
         nfcAdapter?.disableReaderMode(activity)
     }
 
+    fun clearNFCId() {
+        _nfcId.value = null // Limpia el ID para permitir una nueva lectura
+    }
+
     private fun bytesToHexString(bytes: ByteArray): String {
         val sb = StringBuilder()
         for (b in bytes) {
@@ -49,3 +62,4 @@ class NFCManager(private val activity: Activity) {
         return sb.toString()
     }
 }
+

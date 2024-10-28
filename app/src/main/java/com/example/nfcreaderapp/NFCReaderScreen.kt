@@ -55,8 +55,17 @@ fun NFCReaderScreen(
             Text(
                 text = "NFC no está habilitado",
                 fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
+
+            // Botón para abrir la configuración de NFC
+            Button(
+                onClick = { nfcManager.goToNFCSettings() },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "Activar NFC")
+            }
         } else {
             Text(
                 text = "Presiona el botón para habilitar el lector NFC",
