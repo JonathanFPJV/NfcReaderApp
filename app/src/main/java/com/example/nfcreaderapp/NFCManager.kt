@@ -12,6 +12,11 @@ import android.provider.Settings
 
 class NFCManager(private val activity: Activity) {
     private var nfcAdapter: NfcAdapter? = null
+
+    // Nueva propiedad para almacenar el estado de NFC
+    private val _isNFCEnabled = MutableStateFlow(isNFCEnabled())
+    val isNFCEnabled: StateFlow<Boolean> = _isNFCEnabled
+
     private val _nfcId = MutableStateFlow<String?>(null)
     val nfcId: StateFlow<String?> = _nfcId
 
@@ -23,7 +28,10 @@ class NFCManager(private val activity: Activity) {
         return nfcAdapter?.isEnabled == true
     }
 
-
+    fun checkNFCStatus() {
+        // Actualiza el valor de _isNFCEnabled cada vez que se verifique el estado
+        _isNFCEnabled.value = isNFCEnabled()
+    }
 
     fun goToNFCSettings() {
         val intent = Intent(Settings.ACTION_NFC_SETTINGS)
@@ -62,4 +70,5 @@ class NFCManager(private val activity: Activity) {
         return sb.toString()
     }
 }
+
 

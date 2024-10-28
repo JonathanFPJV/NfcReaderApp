@@ -30,6 +30,9 @@ fun NFCReaderScreen(activity: Activity) {
         onDeactivateReader = {
             isReaderActive.value = false
             nfcManager.disableReaderMode()
+        },
+        onClearNFCId = {
+            nfcManager.clearNFCId()
         }
     )
 }
@@ -40,9 +43,15 @@ fun NFCReaderScreen(
     isNFCEnabled: Boolean,
     isReaderActive: Boolean,
     onActivateReader: () -> Unit,
-    onDeactivateReader: () -> Unit
+    onDeactivateReader: () -> Unit,
+    onClearNFCId: () -> Unit // Nueva función para limpiar el ID después de la lectura
 ) {
     val nfcId by nfcManager.nfcId.collectAsState()
+
+    // Monitorear cambios en el estado del NFC cada vez que la pantalla sea visible
+    LaunchedEffect(Unit) {
+        nfcManager.checkNFCStatus()
+    }
 
     Column(
         modifier = Modifier
@@ -108,8 +117,16 @@ fun NFCReaderScreen(
                             )
                         }
                     }
+
+                    Button(
+                        onClick = { onClearNFCId() }, // Limpia el ID para permitir una nueva lectura
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(text = "Realizar nueva lectura")
+                    }
                 }
             }
         }
     }
 }
+
