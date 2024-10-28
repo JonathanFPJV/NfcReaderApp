@@ -1,5 +1,6 @@
 package com.example.nfcreaderapp
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -9,6 +10,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
+@Composable
+fun NFCReaderScreen(activity: Activity) {
+    // Inicializa NFCManager y los estados necesarios
+    val nfcManager = remember { NFCManager(activity) }
+    val isNFCEnabled = remember { mutableStateOf(nfcManager.isNFCEnabled()) }
+    val isReaderActive = remember { mutableStateOf(false) }
+
+    // Pasa los parámetros y funciones de activación/desactivación de lector al segundo NFCReaderScreen
+    NFCReaderScreen(
+        nfcManager = nfcManager,
+        isNFCEnabled = isNFCEnabled.value,
+        isReaderActive = isReaderActive.value,
+        onActivateReader = {
+            isReaderActive.value = true
+            nfcManager.enableReaderMode()
+        },
+        onDeactivateReader = {
+            isReaderActive.value = false
+            nfcManager.disableReaderMode()
+        }
+    )
+}
 
 @Composable
 fun NFCReaderScreen(
